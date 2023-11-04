@@ -1,0 +1,583 @@
+---
+title: "Floods in the United States"
+author: "Nicole Kingdon"
+format: pdf
+editor: visual
+toc: true
+bibliography: references.bib
+---
+
+# Introduction
+
+Floods are extremely destructive storm events that are negatively impactful in any area of the world. Specifically, in the United States, post-flood recovery is offered through the Federal Emergency Managment Agency (FEMA).
+
+## Post-Flood Recovery Experiences
+
+Experiences of post-flood recovery in the United States (US) vary by neighborhood [@varelavarela2023]. Additionally, these experiences differ among different racial and economic groups [@varelavarela2023].
+
+### Racially and Economically Marginalized Groups
+
+Neighborhoods are often segegated by race and income ([@mijs2021; @varelavarela2023]). Races tend to live among one another, as well as incomes ([@mijs2021]). Low-incomes cannot afford to handle the income-related material stressors, and Black and people of color are the majority of US citizens living in poverty ([@varelavarela2023; @mijs2021]).
+
+#### Lower Educational Attainment
+
+Finally, racially and economically marginalized groups are more likely to be less educated than those who are not [@mijs2021]. People with lower educational levels often have less access to resources, like health services, transportation, food, which can be exacerbated when additional hardships, like floods, arise ([Center on Society and Health, 2015](https://societyhealth.vcu.edu/work/the-projects/why-education-matters-to-health-exploring-the-causes.html#gsc.tab=0); [@varelavarela2023]).
+
+#### Strengths-Based Note
+
+Before beginning, it is important to recognize that several pieces of data are missing to fully capture the true story of how different racial and income-levels may have been impacted. Although lower educational levels may related to less available resources, it does not mean that they do not receive additional support elsewhere. Most often, these communities experience resilience through other avenues, which are not recorded in the data. This data alone holds a "deficit-based" approach, but the aim of the analysis is to determine what groups were most impacted to then determine additional areas of support to implement. This changes the narrative and opens doors for marginalized groups to overcome hardships that may make existing hardships much more difficult.
+
+For all groups, it is important to remember the trauma that could result from experiencing a natural disaster, mental health resources should be offered, and in future research, this should be examined.
+
+## Exploratory Data Analysis
+
+This Exploratory Data Analysis will include Census data pertaining to rac
+
+## Aim
+
+It is important to delineate how different racial and economic groups were impacted by floods, specifically among different counties in the US. This will have implications on different additional community resources that should be offered to those are racially and economically marginalized and experience hardships prior to disasters, such as floods.
+
+# Data Acquisition & Assessment
+
+There are three data sets used for this exploratory data analysis: one on Census data for all the counties in the US from 2023, and the other two on storm event data from the National Centers for Environmental Information (NOAA), one from 2020 and the other from 2021.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+library(readr)
+
+census_2021 <- read_csv("Census Download_2023-10-23T135225/ACSST5Y2020.S1701-Data.csv")
+
+fema_disaster_dec <- read_csv("DisasterDeclarationsSummaries.csv")
+
+fema_web_disaster <- read_csv("FemaWebDisasterSummaries.csv")
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+colnames(census_2021) <- census_2021[1, ]
+census_2021 <- census_2021[-1, ]
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+library(dplyr)
+
+census_2023 <- census_2021 |> 
+  mutate_all(~ifelse(. == "null", NA, .))
+
+census_2023 <- census_2023 |> 
+  select_if(~!all(is.na(.)))
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+library(stringr)
+
+census_2023 <- census_2023 |>
+  rename_all(~str_replace_all(., "!!", "_")) |>
+  rename_all(~str_replace_all(., " ", "_"))
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+storm_20_21 <- merge(fema_disaster_dec, fema_web_disaster, by = "disasterNumber")
+
+storm_20_21 <- storm_20_21 |>
+  filter(incidentType == "Flood")
+```
+
+```{r}
+storm_20_21 <- storm_20_21 |>
+  separate_wider_delim(  cols = incidentBeginDate,
+                         delim = "-",
+                         names = c("incident_begin_year",
+                                   "incident_begin_month",
+                                   "incident_begin day"),
+                         too_many = "error",
+                         too_few = "align_start"
+  )
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+storm_20_21$incident_begin_year <- str_trim(storm_20_21$incident_begin_year, side = "both")
+
+storm_20_21$incident_begin_year <- as.numeric(storm_20_21$incident_begin_year)
+
+storm_20_21 <- storm_20_21 |>
+  filter(incident_begin_year == "2020" | incident_begin_year == "2021")
+
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+census_2023$Geographic_Area_Name <- sub("\\s\\w+$", "", census_2023$Geographic_Area_Name)
+
+census_2023$Geographic_Area_Name <- sub("\\s\\w+,", "", census_2023$Geographic_Area_Name)
+
+census_2023$Geographic_Area_Name <- sub(" and$", "", census_2023$Geographic_Area_Name)
+
+census_2023$Geographic_Area_Name <- sub(" Census$", "", census_2023$Geographic_Area_Name)
+
+storm_20_21$designatedArea <- sub(" \\(County\\)", "", storm_20_21$designatedArea)
+
+storm_20_21$designatedArea <- sub(" \\(Parish\\)", "", storm_20_21$designatedArea)
+
+storm_20_21 <- storm_20_21 |>
+  rename(county = designatedArea)
+
+census_2023 <- census_2023 |>
+  rename(county = Geographic_Area_Name)
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+storm_20_21 <- merge(storm_20_21, census_2023, by = "county")
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+storm_20_21 <- storm_20_21 |>
+  distinct(hash.x, .keep_all = TRUE)
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+storm_20_21 <- storm_20_21 |>
+  select(-id.x, -paLoadDate, -iaLoadDate, -hash.y, disasterCloseoutDate, -tribalRequest, -fipsStateCode, -fipsCountyCode, -placeCode, -declarationRequestNumber, -lastIAFilingDate, -lastRefresh.x, -lastRefresh.y, -id.y, -Geography)
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+storm_20_21 <- storm_20_21 |>
+  select(-matches("^Annotation"))
+
+storm_20_21 <- storm_20_21 |>
+  select(-disasterCloseoutDate)
+
+storm_20_21 <- storm_20_21 |>
+  select(-hash.x)
+
+storm_20_21$totalNumberIaApproved <- as.numeric(storm_20_21$totalNumberIaApproved)
+
+storm_20_21$Estimate_Total_Population_for_whom_poverty_status_is_determined <- as.numeric(storm_20_21$Estimate_Total_Population_for_whom_poverty_status_is_determined)
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+storm_20_21 <- storm_20_21 |>
+  mutate(incident_begin_years = incident_begin_year)
+
+storm_20_21 <- storm_20_21 |>
+  unite(incident_begin_date, incident_begin_year, incident_begin_month, 'incident_begin day', sep = "-")
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+library(lubridate)
+
+storm_20_21$incident_begin_date <- as.Date(storm_20_21$incident_begin_date)
+
+storm_20_21$incidentEndDate <- as.Date(storm_20_21$incidentEndDate)
+
+storm_20_21 <- storm_20_21 |>
+  mutate(incident_length_days = as.numeric(difftime(incidentEndDate, incident_begin_date, units = "days")))
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+storm_20_21$Estimate_Total_Population_for_whom_poverty_status_is_determined_AGE_Under_18_years_5_to_17_years <- as.numeric(storm_20_21$Estimate_Total_Population_for_whom_poverty_status_is_determined_AGE_Under_18_years_5_to_17_years)
+
+storm_20_21$Estimate_Total_Population_for_whom_poverty_status_is_determined_AGE_Under_18_years_Under_5_years <- as.numeric(storm_20_21$Estimate_Total_Population_for_whom_poverty_status_is_determined_AGE_Under_18_years_Under_5_years)
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+flood1 <- storm_20_21 |>
+  filter(declarationTitle == "SEVERE, STORMS, FLOODING, LANDSLIDES, AND MUDSLIDES")
+
+flood2 <- storm_20_21 |>
+  filter(declarationTitle == "SEVERE STORMS, TORNADOES, AND FLOODING")
+
+flood3 <- storm_20_21 |>
+  filter(declarationTitle == "SEVERE STORM AND FLOODING")
+
+flood4 <- storm_20_21 |>
+  filter(declarationTitle == "FLOODING, LANDSLIDES, AND MUDSLIDES")
+
+flood5 <- storm_20_21 |>
+  filter(declarationTitle == "FLOODING")
+
+flood6 <- storm_20_21 |>
+  filter(declarationTitle == "SEVERE WINTER STORMS, SNOWSTORMS, STRAIGHT-LINE WINDS, FLOODIN")
+
+flood7 <- storm_20_21 |>
+  filter(declarationTitle == "SEVERE STORMS, FLOODING, LANDSLIDES, AND MUDSLIDES")
+
+flood8 <- storm_20_21 |>
+  filter(declarationTitle == "SEVERE WINTER STORM AND FLOODING")
+
+flood9 <- storm_20_21 |>
+  filter(declarationTitle == "SEVERE WINTER STORM AND FLOODING")
+
+flood10 <- storm_20_21 |>
+  filter(declarationTitle == "SEVERE STORMS, FLOODING, AND LANDSLIDES")
+
+flood11 <- storm_20_21 |>
+  filter(declarationTitle == "SEVERE STORMS, TORNADOES, AND FLOODING")
+
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+ggplot(data = storm_20_21,
+       aes(x = incident_length_days, y = (Estimate_Total_Population_for_whom_poverty_status_is_determined/10000), color = county)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~incident_begin_years, nrow = 1) +
+  labs(
+    title = "Figure 2. Length of Floods",
+    subtitle = "Total Population in Poverty by County",
+    x = "Length of Flood in Days",
+    y = "Population living in Poverty (10000s)"
+  ) +
+  theme_classic() +
+  theme(legend.position = "none")
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+ggplot(data = storm_20_21,
+       aes(x = incident_length_days, y = (Estimate_Total_Population_for_whom_poverty_status_is_determined/10000), color = county)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~incident_begin_years, nrow = 1) +
+  labs(
+    title = "Figure 2. Length of Floods",
+    subtitle = "Total Population in Poverty by County",
+    x = "Length of Flood in Days",
+    y = "Population living in Poverty (10000s)"
+  ) +
+  theme_classic() +
+  theme(legend.position = "none")
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+ggplot(data = storm_20_21,
+       aes(x = incident_length_days, y = (Estimate_Total_Population_for_whom_poverty_status_is_determined_AGE_Under_18_years_Under_5_years/10000), color = county)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~incident_begin_years, nrow = 1) +
+  labs(
+    title = "Figure 2. Length of Floods",
+    subtitle = "Total Population in Poverty Under the Age of 5 by County",
+    x = "Length of Flood in Days",
+    y = "Population living in Poverty: Under 5 Years (10000s) (10000s)"
+  ) +
+  theme_classic() +
+  theme(legend.position = "none")
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+ggplot(data = storm_20_21,
+       mapping = aes(x = incident_begin_years, y = (Estimate_Total_Population_for_whom_poverty_status_is_determined/10000), fill = county)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~ihProgramDeclared, nrow = 1) +
+  labs(
+    title = "Figure 2. Individuals and Household Program Declaration",
+    subtitle = "Total Population in Poverty by County",
+    x = "Year",
+    y = "Population living in Poverty (10000s)"
+  ) +
+  theme_classic() +
+  scale_x_continuous(breaks = c(2020, 2021)) + 
+  theme(legend.position = "none")
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+ggplot(data = storm_20_21,
+       aes(x = incident_begin_years, y = (Estimate_Total_Population_for_whom_poverty_status_is_determined_AGE_Under_18_years_Under_5_years/10000), fill = county)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~ihProgramDeclared, nrow = 1) +
+  labs(
+    title = "Figure 2. Individuals and Household Program Declaration",
+    subtitle = "Total Population in Poverty Under the Age of 5 by County",
+    x = "Year",
+    y = "Population living in Poverty: Under 5 Years (10000s)"
+  ) +
+  theme_classic() +
+  scale_x_discrete() +
+  scale_x_continuous(breaks = c(2020, 2021)) +
+  theme(legend.position = "none")
+
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+ggplot(data = storm_20_21,
+       aes(x = incident_begin_years, y = (Estimate_Total_Population_for_whom_poverty_status_is_determined_AGE_Under_18_years_5_to_17_years/10000), fill = county)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~ihProgramDeclared, nrow = 1) +
+  labs(
+    title = "Figure 2. Individuals and Household Program Declaration",
+    subtitle = "Total Population in Poverty from 5-to-17 Years of Age by County",
+    x = "Year",
+    y = "Population living in Poverty: 5-to-17 Years (10000s)"
+  ) +
+  theme_classic() +
+  scale_x_discrete() +
+  scale_x_continuous(breaks = c(2020, 2021)) +
+  theme(legend.position = "none")
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+ggplot(data = storm_20_21,
+                mapping = aes(x = incident_begin_years, y = (Estimate_Total_Population_for_whom_poverty_status_is_determined/10000), fill = county)) +
+                geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~iaProgramDeclared, nrow = 1) +
+  labs(
+    title = "Figure 2. Individuals Assistance Program Declaration",
+                  subtitle = "Total Population in Poverty by County",
+                  x = "Year",
+                  y = "Population living in Poverty (10000s)"
+                ) +
+                theme_classic() +
+                scale_x_continuous(breaks = c(2020, 2021)) + 
+                theme(legend.position = "none")
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+ggplot(data = storm_20_21,
+       aes(x = incident_begin_years, y = (Estimate_Total_Population_for_whom_poverty_status_is_determined_AGE_Under_18_years_Under_5_years/10000), fill = county)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~iaProgramDeclared, nrow = 1) +
+  labs(
+    title = "Figure 2. Individuals Assistance Program Declaration",
+    subtitle = "Total Population in Poverty Under the Age of 5 by County",
+    x = "Year",
+    y = "Population living in Poverty: Under 5 Years (10000s)"
+  ) +
+  theme_classic() +
+  scale_x_discrete() +
+  scale_x_continuous(breaks = c(2020, 2021)) +
+  theme(legend.position = "none")
+
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+ggplot(data = storm_20_21,
+       aes(x = incident_begin_years, y = (Estimate_Total_Population_for_whom_poverty_status_is_determined_AGE_Under_18_years_5_to_17_years/10000), fill = county)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~iaProgramDeclared, nrow = 1) +
+  labs(
+    title = "Figure 2. Individuals Assistance Program Declaration",
+    subtitle = "Total Population in Poverty from 5-to-17 Years of Age by County",
+    x = "Year",
+    y = "Population living in Poverty: 5-to-17 Years (10000s)"
+  ) +
+  theme_classic() +
+  scale_x_discrete() +
+  scale_x_continuous(breaks = c(2020, 2021)) +
+  theme(legend.position = "none")
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+ggplot(data = storm_20_21,
+       mapping = aes(x = incident_begin_years, y = (Estimate_Total_Population_for_whom_poverty_status_is_determined/10000), fill = county)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~paProgramDeclared, nrow = 1) +
+  labs(
+    title = "Figure 2. Public Assistance Program Declaration",
+    subtitle = "Total Population in Poverty by County",
+    x = "Year",
+    y = "Population living in Poverty (10000s)"
+  ) +
+  theme_classic() +
+  scale_x_continuous(breaks = c(2020, 2021)) + 
+  theme(legend.position = "none")
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+ggplot(data = storm_20_21,
+       aes(x = incident_begin_years, y = (Estimate_Total_Population_for_whom_poverty_status_is_determined_AGE_Under_18_years_Under_5_years/10000), fill = county)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~paProgramDeclared, nrow = 1) +
+  labs(
+    title = "Figure 2. Public Assistance Program Declaration",
+    subtitle = "Total Population in Poverty Under the Age of 5 by County",
+    x = "Year",
+    y = "Population living in Poverty: Under 5 Years (10000s)"
+  ) +
+  theme_classic() +
+  scale_x_discrete() +
+  scale_x_continuous(breaks = c(2020, 2021)) +
+  theme(legend.position = "none")
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+ggplot(data = storm_20_21,
+       aes(x = incident_begin_years, y = (Estimate_Total_Population_for_whom_poverty_status_is_determined_AGE_Under_18_years_5_to_17_years/10000), fill = county)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~paProgramDeclared, nrow = 1) +
+  labs(
+    title = "Figure 2. Public Assistance Program Declaration",
+    subtitle = "Total Population in Poverty from 5-to-17 Years of Age by County",
+    x = "Year",
+    y = "Population living in Poverty: 5-to-17 Years (10000s)"
+  ) +
+  theme_classic() +
+  scale_x_discrete() +
+  scale_x_continuous(breaks = c(2020, 2021)) +
+  theme(legend.position = "none")
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+ggplot(data = storm_20_21,
+       mapping = aes(x = incident_begin_years, y = (Estimate_Total_Population_for_whom_poverty_status_is_determined/10000), fill = county)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~hmProgramDeclared, nrow = 1) +
+  labs(
+    title = "Figure 2. Hazard Mitigation Program Declaration",
+    subtitle = "Total Population in Poverty by County",
+    x = "Year",
+    y = "Population living in Poverty (10000s)"
+  ) +
+  theme_classic() +
+  scale_x_continuous(breaks = c(2020, 2021)) +
+  theme(legend.position = "none")
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+ggplot(data = storm_20_21,
+       aes(x = incident_begin_years, y = (Estimate_Total_Population_for_whom_poverty_status_is_determined_AGE_Under_18_years_Under_5_years/10000), fill = county)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~hmProgramDeclared, nrow = 1) +
+  labs(
+    title = "Figure 2. Hazard Mitigation Program Declaration",
+    subtitle = "Total Population in Poverty Under the Age of 5 by County",
+    x = "Year",
+    y = "Population living in Poverty: Under 5 Years (10000s)"
+  ) +
+  theme_classic() +
+  scale_x_discrete() +
+  scale_x_continuous(breaks = c(2020, 2021)) +
+  theme(legend.position = "none")
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+ggplot(data = storm_20_21,
+       aes(x = incident_begin_years, y = (Estimate_Total_Population_for_whom_poverty_status_is_determined_AGE_Under_18_years_5_to_17_years/10000), fill = county)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~hmProgramDeclared, nrow = 1) +
+  labs(
+    title = "Figure 2. Hazard Mitigation Program Declaration",
+    subtitle = "Total Population in Poverty Under the Age of 5 by County",
+    x = "Year",
+    y = "Population living in Poverty: 5-to-17 Years (10000s)"
+  ) +
+  theme_classic() +
+  scale_x_discrete() +
+  scale_x_continuous(breaks = c(2020, 2021)) +
+  theme(legend.position = "none")
+```
+
+# References
