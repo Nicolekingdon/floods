@@ -37,11 +37,33 @@ When protective factors, such as supports from Federal Emergency Management Agen
 
 ## FEMA Assistance
 
-FEMA's mission is "helping people before, during, and after disasters." ([FEMA-Strategic-Plan](https://www.fema.gov/sites/default/files/documents/fema_2022-2026-strategic-plan.pdf)) The specifically provide post-disaster relief, in order to reduce the hardships that tend to arise. Additionally, they look to promote resilience against disasters, such as floods ([FEMA-Resilience](https://www.fema.gov/about/action/disaster-resilience)). There are four types of assistance programs that FEMA offers: Individuals and Households, Individual Assistance (IHA), Public Assistance (PA), and Hazard Mitigation (HM) ([FEMA-Declarations](https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2)).
+FEMA's mission is "helping people before, during, and after disasters." ([FEMA-Strategic-Plan](https://www.fema.gov/sites/default/files/documents/fema_2022-2026-strategic-plan.pdf)) The specifically provide post-disaster relief, in order to reduce the hardships that tend to arise. Additionally, they look to promote resilience against disasters, such as floods ([FEMA-Resilience](https://www.fema.gov/about/action/disaster-resilience)). There are three types of assistance programs that FEMA offers: Individuals and Households (IHA), Public Assistance (PA), and Hazard Mitigation (HM) ([FEMA-Declarations](https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2)).
 
 ### Individuals and Households Assistance Program
 
-The IHA Program is additional support offered to uninsured and under-insured expenses and needs through financial and direct services ([FEMA-IHA](https://www.fema.gov/assistance/individual/program)).
+The IHA Program is additional support offered to uninsured and under-insured expenses and needs through financial and direct services for individuals and households who experienced a disaster-related event ([FEMA-IHA](https://www.fema.gov/assistance/individual/program)). They can cover the following expenses and needs: money for temporary housing, a temporary housing unit, repairs of replacement of owner-occupied homes, and hazard mitigation to repair or rebuild stronger, more durable homes. Additionally other areas of need can be covered: damage to essential household items, clothing, clean-up items, tools and specialized clothing needed for one's job, educational materials, accessibility items, an essential vehicle, disaster-related funeral and burial expenses, disaster-related child-care expenses, medical and dental expenses, and moving and storage expenses ([FEMA-IHA-Services](https://www.fema.gov/assistance/individual/housing)).
+
+### Public Assistance Program
+
+The PA program has four eligibility components: **applicant** must be a state, territory, tribe, local government, or a certain nonprofit organization; a **facility** is a building, public works system, equipment, or improved and maintained natural feature; **work** is an "emergency" or "permanent" required because of the disaster-related event; **costs** must be used for disaster-related work. Ultimately, the PA program offers grants to particular types of applicants to do particular disaster-related work for a particular period of time necessary to support post-disaster relief ([FEMA-PA](https://www.fema.gov/assistance/public/process)).
+
+#### Emergency Work (Duration: 6 Months)
+
+-   Categorey A: Debris removal
+
+-   Category B: Emergency protective measures
+
+#### Permanent Work (Duration: 18 Months)
+
+-   Category C: Roads and bridges
+
+-   Category D: Water control facilities
+
+-   Category E: Public buildings and equipment
+
+-   Category F: Public utilities
+
+-   Category G: Parks, recreational, and other facilities
 
 ## Aim
 
