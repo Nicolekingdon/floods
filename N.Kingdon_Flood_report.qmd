@@ -9,29 +9,39 @@ bibliography: references.bib
 
 # Introduction
 
-Floods are extremely destructive storm events that are negatively impactful in any area of the world. Specifically, in the United States, post-flood recovery is offered through the Federal Emergency Managment Agency (FEMA).
+Floods are extremely destructive storm events that are negatively impactful in any area of the world. Specifically, in the United States, post-flood recovery is offered through the Federal Emergency Management Agency (FEMA).
 
 ## Post-Flood Recovery Experiences
 
-Experiences of post-flood recovery in the United States (US) vary by neighborhood [@varelavarela2023]. Additionally, these experiences differ among different racial and economic groups [@varelavarela2023].
+Experiences of post-flood recovery in the United States (US) vary by neighborhood [@varelavarela2023]. Additionally, these experiences differ for low-, middle-, or high-income populations [@varelavarela2023].
 
-### Racially and Economically Marginalized Groups
+### Economically Marginalized Groups
 
-Neighborhoods are often segegated by race and income ([@mijs2021; @varelavarela2023]). Races tend to live among one another, as well as incomes ([@mijs2021]). Low-incomes cannot afford to handle the income-related material stressors, and Black and people of color are the majority of US citizens living in poverty ([@varelavarela2023; @mijs2021]).
+Low-income populations already have previous material and relational hardships they experience daily ([@varelavarela2023; @mijs2021]). Traumatic events, like floods, can exacerbate their hardships. Children and adolescents living in low-income households may experience long-term developmental impacts due to floods.
 
-#### Lower Educational Attainment
+### Low-Income Children and Adolescents
 
-Finally, racially and economically marginalized groups are more likely to be less educated than those who are not [@mijs2021]. People with lower educational levels often have less access to resources, like health services, transportation, food, which can be exacerbated when additional hardships, like floods, arise ([Center on Society and Health, 2015](https://societyhealth.vcu.edu/work/the-projects/why-education-matters-to-health-exploring-the-causes.html#gsc.tab=0); [@varelavarela2023]).
+Low-income children and adolescents directly and indirectly experience several material and relational hardships due to their economic status. Traumatic events, like floods, can increase developmental impacts, such as educational attainment ([@ahmed2022])), depressive symptoms ([@felton2013]), and post-traumatic stress disorder ([@liu2007]). Each of these impacts can impede children from reaching their full potential across their development.
 
-#### Strengths-Based Note
+## Family Stress Model
 
-Before beginning, it is important to recognize that several pieces of data are missing to fully capture the true story of how different racial and income-levels may have been impacted. Although lower educational levels may related to less available resources, it does not mean that they do not receive additional support elsewhere. Most often, these communities experience resilience through other avenues, which are not recorded in the data. This data alone holds a "deficit-based" approach, but the aim of the analysis is to determine what groups were most impacted to then determine additional areas of support to implement. This changes the narrative and opens doors for marginalized groups to overcome hardships that may make existing hardships much more difficult.
+### Risk Factors
 
-For all groups, it is important to remember the trauma that could result from experiencing a natural disaster, mental health resources should be offered, and in future research, this should be examined.
+Figure 1 shows the Family Stress Model Framework ([@masarik2017]), which conceptualizes how risks, like floods, can impact low-income children. The economic hardship, like floods, is placed upon the household, which increases economic pressure. This increases parental/caregiver psychological distress, which is likely to impact relationships and parenting. Ultimately, the child may be impacted by experiencing adjustment problems across their development.
 
-## Exploratory Data Analysis
+### Protective Factors
 
-This Exploratory Data Analysis will include Census data pertaining to rac
+When protective factors, such as supports from Federal Emergency Management Agency (FEMA), are implemented to reduce economic hardships, then the family and child can be protected from the full impact of the economic hardship.
+
+![Family Stress Model Framework. (Masarik & Conger, 2017)](1-s2.0-S2352250X16300549-gr1.jpg){fig-align="center"}
+
+## FEMA Assistance
+
+FEMA's mission is "helping people before, during, and after disasters." ([FEMA-Strategic-Plan](https://www.fema.gov/sites/default/files/documents/fema_2022-2026-strategic-plan.pdf)) The specifically provide post-disaster relief, in order to reduce the hardships that tend to arise. Additionally, they look to promote resilience against disasters, such as floods ([FEMA-Resilience](https://www.fema.gov/about/action/disaster-resilience)). There are four types of assistance programs that FEMA offers: Individuals and Households, Individual Assistance (IHA), Public Assistance (PA), and Hazard Mitigation (HM) ([FEMA-Declarations](https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2)).
+
+### Individuals and Households Assistance Program
+
+The IHA Program is additional support offered to uninsured and under-insured expenses and needs through financial and direct services ([FEMA-IHA](https://www.fema.gov/assistance/individual/program)).
 
 ## Aim
 
@@ -48,7 +58,9 @@ There are three data sets used for this exploratory data analysis: one on Census
 
 library(readr)
 
-census_2021 <- read_csv("Census Download_2023-10-23T135225/ACSST5Y2020.S1701-Data.csv")
+census_2020 <- read_csv("Census Download_2023-10-23T135225/ACSST5Y2020.S1701-Data.csv")
+
+census_2021 <- read_csv("Census Download_2023-10-23T135225/ACSST5Y2021.S1701-Data.csv")
 
 fema_disaster_dec <- read_csv("DisasterDeclarationsSummaries.csv")
 
@@ -59,6 +71,9 @@ fema_web_disaster <- read_csv("FemaWebDisasterSummaries.csv")
 #| echo: false
 #| message: false
 #| warning: false
+
+colnames(census_2020) <- census_2020[1, ]
+census_2020 <- census_2020[-1, ]
 
 colnames(census_2021) <- census_2021[1, ]
 census_2021 <- census_2021[-1, ]
@@ -71,7 +86,23 @@ census_2021 <- census_2021[-1, ]
 
 library(dplyr)
 
-census_2023 <- census_2021 |> 
+census_2020 <- census_2020 |>
+  mutate(year = "2020")
+
+census_2021 <- census_2021 %>%
+  mutate(new_column = "2021")
+
+common_columns <- intersect(colnames(census_2020), colnames(census_2021))
+
+census_2020 <- census_2020 |>
+  select(all_of(common_columns))
+
+census_2021 <- census_2021 |>
+  select(all_of(common_columns))
+
+census_2023<- rbind(census_2020, census_2021)
+
+census_2023 <- census_2023 |> 
   mutate_all(~ifelse(. == "null", NA, .))
 
 census_2023 <- census_2023 |> 
