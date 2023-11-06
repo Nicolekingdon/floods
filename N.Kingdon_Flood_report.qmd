@@ -1,7 +1,8 @@
 ---
 title: "FEMA Post-Flood Assistance Programs for United States Counties"
-subtitle: "An Exploratory Data Analysis of Assistance by Length of Flood, Severity of Flood, and Total Population Living in Poverty and with Children and Adolescents"
+subtitle: "An Exploratory Data Analysis of FEMA Assistance Offered by Length of Flood, Type of Flood, and Total Population Living in Poverty and with Children and Adolescents"
 author: "Nicole Kingdon"
+date: 11-06-23
 format: pdf
 editor: visual
 toc: true
@@ -12,7 +13,7 @@ bibliography: references.bib
 
 # Introduction
 
-Floods are extremely destructive storm events that are negatively impactful in any area of the world. Specifically, in the United States, post-flood recovery is offered through the Federal Emergency Management Agency (FEMA).
+Floods are extremely destructive storm events that can threaten one's life, business, properties, belongings, and public services and infrastructures ([Flood-Impact](https://www.waterconnect.sa.gov.au/Flood-Awareness/SitePages/What%20are%20the%20impacts%20of%20floods.aspx#:~:text=Main%20impacts%20of%20floods,access%20to%20essential%20public%20services.)), as well on distress, anxiety, depression, and other mental symptoms ([@foudi2017]). Specifically, in the United States, post-flood recovery is offered through the Federal Emergency Management Agency (FEMA), which looks to mitigate risk factors resulting from natural disasters, like floods ([FEMA-Support](https://www.fema.gov/disaster/recover)).
 
 ## Post-Flood Recovery Experiences
 
@@ -20,11 +21,11 @@ Experiences of post-flood recovery in the United States (US) vary by neighborhoo
 
 ### Economically Marginalized Groups
 
-Low-income populations already have previous material and relational hardships they experience daily ([@varelavarela2023; @mijs2021]). Traumatic events, like floods, can exacerbate their hardships. Children and adolescents living in low-income households may experience long-term developmental impacts due to floods.
+Low-income populations already have previous material and relational hardships they experience daily [@varelavarela2023; @mijs2021]. Traumatic events, like floods, can exacerbate their hardships ([Floods_Low-Income_Impact](https://e360.yale.edu/digest/flood-risk-for-low-income-housing-in-u-s-could-triple-by-2050#:~:text=Flooding%20in%20low%2Dincome%20communities,finding%20the%20funds%20to%20recover.)). Children and adolescents living in low-income households may experience long-term developmental impacts due to floods ([Flood-Develop-Impacts](https://www.qeh.ox.ac.uk/blog/how-do-climate-shocks-impact-childrens-development-evidence-vietnam)).
 
 ### Low-Income Children and Adolescents
 
-Low-income children and adolescents directly and indirectly experience several material and relational hardships due to their economic status. Traumatic events, like floods, can increase developmental impacts, such as educational attainment ([@ahmed2022])), depressive symptoms ([@felton2013]), and post-traumatic stress disorder ([@liu2007]). Each of these impacts can impede children from reaching their full potential across their development.
+Low-income children and adolescents directly and indirectly experience several material and relational hardships due to their economic status [@masarik2017a]. Traumatic events, like floods, can increase developmental impacts, such as educational attainment [@ahmed2022], depressive symptoms [@felton2013], and post-traumatic stress disorder [@liu2007]. Each of these impacts can impede children from reaching their full potential across their development.
 
 ## Family Stress Model
 
@@ -72,7 +73,7 @@ The HM program offers grants to implement protective factors that will help in p
 
 ## Aim
 
-As risks factors stemming from disasters are inevitable, it is important to delineate how post-flood recovery programs differed for counties with the lowest income populations. This Exploratory Data Analysis will focus on examining what counties were declared to receive the IHA, PA, and/or HM program, which counties had the highest total populations living in poverty, as well as the most children 0 to 17 years of age. It will also examine the different lengths of the floods, as it would be perceived that longer floods would amount to more damage. Finally, this study aims to use a strengths-based lens, by offering suggestions on how protective factors, like FEMA assistance programs, could be bolstered for economically marginalized populations.
+As risks factors stemming from disasters are inevitable, it is important to delineate how post-flood recovery programs differed for counties with the lowest income populations. This Exploratory Data Analysis will focus on examining what counties were declared to receive the IHA, PA, and/or HM program, which counties had the highest total populations living in poverty, as well as the highest population of children in poverty under five and between 5-to-17 years of age. It will also examine the different lengths of the floods, as it would be perceived that longer floods would amount to more damage. Additionally, it will look at type of flood and the grant amounts offered to each county. Finally, this study aims to use a strengths-based lens, by offering suggestions on how protective factors, like FEMA assistance programs, could be bolstered for economically marginalized populations.
 
 {{< pagebreak >}}
 
@@ -124,7 +125,7 @@ colnames(census_2021) <- census_2021[1, ]
 census_2021 <- census_2021[-1, ]
 ```
 
-Next, I mutated a new column for each data frame, indicating the year in which the Census data was collected, stacked the data frames by finding the columns that corresponded and then binding them together. Additionally, I removed all the columns with `NA`s in the new `census_2023` data frame that held both 2020 and 2021 Census data.
+Next, I mutated a new column for each data frame, indicating the year in which the Census data was collected, stacked the data frames by finding the columns that corresponded and then binded them together. Additionally, I removed all the columns with `NA`s in the new `census_2023` data frame that held both 2020 and 2021 Census data.
 
 ```{r}
 #| echo: false
@@ -156,7 +157,7 @@ census_2023 <- census_2023 |>
   select_if(~!all(is.na(.)))
 ```
 
-Finally, I finished cleaning the `census_2023` data frame by cleaning up the column names.
+Finally, I finished the initial cleaning of the `census_2023` data frame by cleaning up the column names.
 
 ```{r}
 #| echo: false
@@ -185,7 +186,7 @@ storm_20_21 <- storm_20_21 |>
   filter(incidentType == "Flood")
 ```
 
-Next, I prepped the data frame to be able to be only holding data from 2020 and 2021. To do this, I split the `incidentBeginDate` column to reveal a single column of `incident_begin_year` to support in this step.
+Next, I prepped the data frame to be able to only hold data from 2020 and 2021. To do this, I split the `incidentBeginDate` column to reveal a single column of `incident_begin_year` to support in this step.
 
 ```{r}
 #| echo: false
@@ -225,7 +226,7 @@ storm_20_21 <- storm_20_21 |>
 
 In order to prep the combination of `census_2023` and `storm_20_21` to create a complete data frame, I had to clean up the columns in both data frames with the counties in them. This was going to be the best way to match up the data.
 
-To begin, I trimmed the strings in both data frames so that the names could be simply both of the counties only, as some included the word county and the state. I also renamed both columns to `county`.
+To begin, I trimmed the strings in both data frames so that the values would be simply the county name only, as some included the word county and the state. I also renamed both columns to `county`.
 
 ```{r}
 #| echo: false
@@ -320,7 +321,7 @@ storm_20_21 <- storm_20_21 |>
   unite(incident_begin_date, incident_begin_year, incident_begin_month, 'incident_begin day', sep = "-")
 ```
 
-I also used Lubridate to make both the `incident_begin_date` and `incident_end_date` columns into dates. As well as, mutated a new column, `incident_length_days`, with the difference in days between the incident begin and end date.
+I also used Lubridate to make both the `incident_begin_date` and `incident_end_date` columns into dates, as well as the other columns related to dates. Additionally, I mutated a new column, `incident_length_days`, with the difference in days between the incident begin and end date.
 
 ```{r}
 #| echo: false
@@ -333,9 +334,24 @@ storm_20_21$incident_begin_date <- as.Date(storm_20_21$incident_begin_date)
 
 storm_20_21$incidentEndDate <- as.Date(storm_20_21$incidentEndDate)
 
+storm_20_21$declarationDate <- as.Date(storm_20_21$declarationDate)
+
+storm_20_21$fyDeclared <- year(storm_20_21$fyDeclared)
+
 storm_20_21 <- storm_20_21 |>
   mutate(incident_length_days = as.numeric(difftime(incidentEndDate, incident_begin_date, units = "days")))
 
+```
+
+Finally, I am going to select the columns that are necessary for the Exploratory Data Analysis.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+storm_20_21 <- storm_20_21 |>
+  select(8, 3, 2, 4, 1, 14, 15, 390, 391, 6, 7, 9, 10:13, 16:20, 24, 25, 28:31)
 ```
 
 ## Assumptions & Motivations
@@ -370,15 +386,15 @@ The columns used in this Exploratory Data Analysis are as follows: `county`, `de
 
 ### `county`
 
-The following values in the `county` column are nominal variables: `r paste(storm_20_21|> distinct(county))`.
+The following values in the `county` column are nominal variables: `r paste(storm_20_21|> distinct(county))`. This describes what county exactly the flood took place in.
 
 ### `declarationTitle`
 
-The `declarationTitle` column holds the following distinct values: `r paste(storm_20_21|> distinct(declarationTitle))`. Each values describes what type of flood occured in the particular county for the particular date. These values are all strings, as well as are nominal variables.
+The `declarationTitle` column holds the following distinct values: `r paste(storm_20_21|> distinct(declarationTitle))`. Each values describes what type of flood occurred in the particular county for the particular date. These values are all strings, as well as are nominal variables.
 
 ### `incident_begin_years`
 
-The `incident_begin_years` has the following two values: `r paste(storm_20_21|> distinct(incident_begin_years))` . These are all interval variables to describe the year in which the flood event took place.
+The `incident_begin_years` has the following two values: `r paste(storm_20_21|> distinct(incident_begin_years))`. These are all interval variables to describe the year in which the flood event took place.
 
 ### `incident_length_days`
 
@@ -386,7 +402,9 @@ The `incident_length_days` column holds interval variables. This is to describe 
 
 ### `Estimate_Total_Population` Columns
 
-The three `Estimate_Total_Population` columns, `Estimate_Total_Population_for_whom_poverty_status_is_determined`,
+The three `Estimate_Total_Population` columns,
+
+`Estimate_Total_Population_for_whom_poverty_status_is_determined`,
 
 `Estimate_Total_Population_for_whom_poverty_status_is_determined_AGE_Under_18_years_Under_5_years`, and
 
@@ -400,11 +418,11 @@ The four `ProgramDeclared` columns, `ihProgramDeclared`, `paProgramDeclared`, `h
 
 ### `totalNumber` and `totalAmount` Approved Columns
 
-The four columns with approved total number or amount of approved support, `totalNumberIaApproved`, `totalAmountihpApproved`, `totalAmountHaApproved`, and `totalAmountOnaApproved`, hold interval variables with dollar amounts approved to support Individual Assistance, total amount for Individuals and Housing Assistance, Housing Assistance, and Other Needs Assistance.
+The four columns with approved total number or amount of approved support, `totalNumberIaApproved`, `totalAmountIhpApproved`, `totalAmountHaApproved`, and `totalAmountOnaApproved`, hold interval variables with dollar amounts approved to support Individual Assistance, total amount for Individuals and Housing Assistance, Housing Assistance, and Other Needs Assistance.
 
-## Flood Type Declaration
+## Type of Flood & Grant Assistance
 
-I prepped data frames by flood type to see the amount of grant funding provided to each county.
+I prepped data frames by flood type to see the amount of grant funding provided to each county dependent on the type of flood.
 
 ```{r}
 #| echo: false
@@ -429,21 +447,77 @@ flood7 <- storm_20_21 |>
 
 Counties received the following amounts for Individual Assistance: \$1,136, Individuals and Housing Assistance: \$10,038,254, Housing Assistance: \$8,551,669, and Other Needs Assistance: \$1,486,585, no matter the poverty level of the county.
 
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+library(knitr)
+library(kableExtra)
+
+flood1 <- flood1 |>
+  distinct(totalNumberIaApproved, totalAmountIhpApproved, totalAmountHaApproved, totalAmountOnaApproved)
+
+flood1 |>
+  kbl(caption = "SEVERE, STORMS, FLOODING, LANDSLIDES, AND MUDSLIDES") |>
+  kable_minimal()
+
+```
+
 ### `SEVERE STORMS, TORNADOES, AND FLOODING`
 
 Counties who experienced `SEVERE STORMS, TORNADOES, AND FLOODING`received the following amounts for Individual Assistance: \$2,501, Individuals and Housing Assistance: \$14,032,804, Housing Assistance: \$11,176,256, and Other Needs Assistance: \$2,856,548. The amounts were all the same for every county, no matter the poverty level.
 
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+flood2 <- flood2 |>
+  distinct(totalNumberIaApproved, totalAmountIhpApproved, totalAmountHaApproved, totalAmountOnaApproved)
+
+flood2 |>
+  kbl(caption = "SEVERE STORMS, TORNADOES, AND FLOODING") |>
+  kable_minimal()
+```
+
 ### `SEVERE STORM AND FLOODING`
 
-The counties that experienced `SEVERE STORM AND FLOODING` received the following amounts for Individual Assistance: \$955, Individuals and Housing Assistance: \$8,138,894, Housing Assistance: \$6,301,770, and Other Needs Assistance: \$1,837,123. All counties received the same amount for all types of assistance.
+The counties that experienced `SEVERE STORM AND FLOODING` received the following amounts for Individual Assistance: \$955, Individuals and Housing Assistance: \$8,138,894, Housing Assistance: \$6,301,770, and Other Needs Assistance: \$1,837,123. All counties received the same amount for all types of assistance, and some rows held `NA` values, therefore it was not disclosed if support was offered.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+flood3 <- flood3 |>
+  distinct(totalNumberIaApproved, totalAmountIhpApproved, totalAmountHaApproved, totalAmountOnaApproved)
+
+flood3 |>
+  kbl(caption = "SEVERE STORM AND FLOODING") |>
+  kable_minimal()
+```
 
 ### `SEVERE STORMS, FLOODING, LANDSLIDES, AND MUDSLIDE`
 
-Counties with `SEVERE STORMS, FLOODING, LANDSLIDES, AND MUDSLIDE` received the following amounts for Individual Assistance: \$165, Individuals and Housing Assistance: \$2,242,253, Housing Assistance: \$2,069,845, and Other Needs Assistance: \$172,408.40. Each county received the same amount.
+Counties with `SEVERE STORMS, FLOODING, LANDSLIDES, AND MUDSLIDE` received the following amounts for Individual Assistance: \$165, Individuals and Housing Assistance: \$2,242,253, Housing Assistance: \$2,069,845, and Other Needs Assistance: \$172,408.40. Each county received the same amount, and some counties did not have any values to describe what they received (`NA`s).
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+flood7 <- flood7 |>
+  distinct(totalNumberIaApproved, totalAmountIhpApproved, totalAmountHaApproved, totalAmountOnaApproved)
+
+flood7 |>
+  kbl(caption = "SEVERE STORMS, FLOODING, LANDSLIDES, AND MUDSLIDE") |>
+  kable_minimal()
+```
 
 ### Individual Assistance Program
 
-Figure 2 shows the counties with the highest populations living in poverty, as well as how long their floods were and if they were offered the FEMA IA program. Figure 3 shows such for total population living in poverty under five years of age, and Figure 4 shows the same for children 5-to-17 year olds. All figures show that for floods occurring in 2020 and 2021, these counties did not receive the IA program, regardless of their total population living in poverty and length of flood.
+Figure 2 shows the counties with the highest populations living in poverty, as well as how long their floods were and if they were offered the FEMA IA program. Figure 3 shows such for total population living in poverty under five years of age, and Figure 4 shows the same for children 5-to-17 years old. All figures show that for floods occurring in 2020 and 2021, these counties did not receive the IA program, regardless of their total population living in poverty and length of flood.
 
 ```{r}
 #| echo: false
@@ -695,12 +769,16 @@ ggplot(data = storm_20_21,
 
 Taking the findings from the Census and FEMA data on floods in 2020 and 2021, it shows that FEMA does not take into account poverty level, nor length of flood, when determining assistance. There were several counties who received no assistance and had high numbers of populations in poverty and the longest floods, specifically in the IA and IHA programs. The IA and the IHA programs are designed to support the entire household, including the children. The populations with the highest number of children living in poverty are not receiving the assistance that they need the most. There needs to be further work in this area to ensure the protective factors set in place to support against post-flood risks are targeting those who need it most.
 
+It also appears the post-flood relief of HM and PA were offered to almost, if not, all counties who needed it, not dependent on poverty level or length of flood. Additionally, the length of maximum time of PA is the same across the board (see page 5), not dependent on poverty level, length of flood, and type of flood.
+
 # Implications
 
-There are several implications to these findings, specifically to FEMA assistance programs, as well as other areas to explore with this data. First, FEMA should determine grant support based on poverty levels in the county, as well as the length and severity of the flood. Currently, FEMA has been offering the same amount of grant money for all counties, based on declared flood type and nothing else. By distributing this money more equitably, populations living in poverty, and those who are children and adolescents, will get the protective factors they need to build resilience against post-flood risks. Additionally, statisticians should work to build a mathematical model that will delineate how to best support the counties with the highest populations living in poverty, experiencing the most severe floods, and having them last the longest amount of time.
+There are several implications to these findings, specifically to FEMA assistance programs, as well as other areas to explore with this data. First, FEMA should determine grant support based on poverty levels in the county, as well as the length and severity of the flood. Currently, FEMA has been offering the same amount of grant money for all counties, based on declared flood type and nothing else. By distributing this money more equitably, populations living in poverty, and those who are children and adolescents, will get the protective factors they need to build resilience against post-flood risks. Next, FEMA should ensure the declared post-flood relief
+
+Additionally, statisticians should work to build a mathematical model that will delineate how to equitably give grant funding and offer programs services to counties who need it the most. A model that accounts for total population living in poverty, especially those with children and adolescents, length of flood, and type of flood. All of these factors can find a way to equitably distribute FEMA assistance to economically vulnerable populations, especially those with the highest number of children, so they can build resiliency against post-flood risks.
 
 # Conclusion
 
-In conclusion, it is apparent that FEMA assistance is not equitably distributed to populations who need it the most, like populations in poverty. The children and adolescents living in these populations can have extreme developmental impacts due to flood-related risks ([@masarik2017a]). FEMA must work with statisticians to develop a mathematical model to quantify how the counties with the highest amounts of populations in poverty, especially with children, can get to most targeted grant support in the IA and IHA programs, also taking into account length of flood and severity of the flood. Currently, FEMA is offering the same assistance to all counties, no matter the poverty level but instead based on the severity of the flood itself. By implementing an equity model into their assistance grant amounts, then the populations living in poverty will receive the funding they need to be protected against flood risk factors.
+In conclusion, it is apparent that FEMA assistance is not equitably distributed to populations who need it the most, like populations in poverty. The children and adolescents living in these populations can have extreme developmental impacts due to flood-related risks [@masarik2017a]. FEMA must work with statisticians to develop a mathematical model to quantify how the counties with the highest amounts of populations in poverty, especially with children, can get to most targeted grant support in the IA and IHA programs, also taking into account length of flood and severity of the flood. Currently, FEMA is offering the same assistance to all counties, no matter the poverty level but instead based on the severity of the flood itself. By implementing an equity model into their assistance grant amounts, then the populations living in poverty will receive the funding they need to be protected against flood risk factors.
 
 # References
