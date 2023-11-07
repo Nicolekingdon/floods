@@ -447,73 +447,17 @@ flood7 <- storm_20_21 |>
 
 Counties received the following amounts for Individual Assistance: \$1,136, Individuals and Housing Assistance: \$10,038,254, Housing Assistance: \$8,551,669, and Other Needs Assistance: \$1,486,585, no matter the poverty level of the county.
 
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-
-library(knitr)
-library(kableExtra)
-
-flood1 <- flood1 |>
-  distinct(totalNumberIaApproved, totalAmountIhpApproved, totalAmountHaApproved, totalAmountOnaApproved)
-
-flood1 |>
-  kbl(caption = "SEVERE, STORMS, FLOODING, LANDSLIDES, AND MUDSLIDES") |>
-  kable_minimal()
-
-```
-
 ### `SEVERE STORMS, TORNADOES, AND FLOODING`
 
 Counties who experienced `SEVERE STORMS, TORNADOES, AND FLOODING`received the following amounts for Individual Assistance: \$2,501, Individuals and Housing Assistance: \$14,032,804, Housing Assistance: \$11,176,256, and Other Needs Assistance: \$2,856,548. The amounts were all the same for every county, no matter the poverty level.
-
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-
-flood2 <- flood2 |>
-  distinct(totalNumberIaApproved, totalAmountIhpApproved, totalAmountHaApproved, totalAmountOnaApproved)
-
-flood2 |>
-  kbl(caption = "SEVERE STORMS, TORNADOES, AND FLOODING") |>
-  kable_minimal()
-```
 
 ### `SEVERE STORM AND FLOODING`
 
 The counties that experienced `SEVERE STORM AND FLOODING` received the following amounts for Individual Assistance: \$955, Individuals and Housing Assistance: \$8,138,894, Housing Assistance: \$6,301,770, and Other Needs Assistance: \$1,837,123. All counties received the same amount for all types of assistance, and some rows held `NA` values, therefore it was not disclosed if support was offered.
 
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-
-flood3 <- flood3 |>
-  distinct(totalNumberIaApproved, totalAmountIhpApproved, totalAmountHaApproved, totalAmountOnaApproved)
-
-flood3 |>
-  kbl(caption = "SEVERE STORM AND FLOODING") |>
-  kable_minimal()
-```
-
 ### `SEVERE STORMS, FLOODING, LANDSLIDES, AND MUDSLIDE`
 
 Counties with `SEVERE STORMS, FLOODING, LANDSLIDES, AND MUDSLIDE` received the following amounts for Individual Assistance: \$165, Individuals and Housing Assistance: \$2,242,253, Housing Assistance: \$2,069,845, and Other Needs Assistance: \$172,408.40. Each county received the same amount, and some counties did not have any values to describe what they received (`NA`s).
-
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-
-flood7 <- flood7 |>
-  distinct(totalNumberIaApproved, totalAmountIhpApproved, totalAmountHaApproved, totalAmountOnaApproved)
-
-flood7 |>
-  kbl(caption = "SEVERE STORMS, FLOODING, LANDSLIDES, AND MUDSLIDE") |>
-  kable_minimal()
-```
 
 ### Individual Assistance Program
 
@@ -531,7 +475,7 @@ ggplot(data = storm_20_21,
   geom_bar(stat = "identity", position = "dodge") +
   facet_wrap(~iaProgramDeclared, nrow = 1) +
   labs(
-    title = "Figure 2. Individuals Assistance Program Declaration",
+    title = "Figure 2. Individuals Assistance Program",
     subtitle = "Total Population in Poverty by County",
     x = "Length of Flood in Days",
     y = "Population living in Poverty (10000s)"
@@ -550,7 +494,7 @@ ggplot(data = storm_20_21,
   geom_bar(stat = "identity", position = "dodge") +
   facet_wrap(~iaProgramDeclared, nrow = 1) +
   labs(
-    title = "Figure 3. Individuals Assistance Program Declaration",
+    title = "Figure 3. Individuals Assistance Program",
     subtitle = "Total Population in Poverty Under the Age of 5 by County",
     x = "Length of Flood in Days",
     y = "Population Under 5 Years in Poverty (10000s)"
@@ -569,7 +513,7 @@ ggplot(data = storm_20_21,
   geom_bar(stat = "identity", position = "dodge") +
   facet_wrap(~iaProgramDeclared, nrow = 1) +
   labs(
-    title = "Figure 4. Individual Assistance Program Declaration",
+    title = "Figure 4. Individual Assistance Program",
     subtitle = "Total Population in Poverty from 5-to-17 Years of Age by County",
     x = "Length in Days",
     y = "Population 5-to-17 Years in Poverty (10000s)"
@@ -593,7 +537,7 @@ ggplot(data = storm_20_21,
   geom_bar(stat = "identity", position = "dodge") +
   facet_wrap(~ihProgramDeclared, nrow = 1) +
   labs(
-    title = "Figure 5. Individual and Household Assistance Program Declaration",
+    title = "Figure 5. Individual and Household Assistance Program",
     subtitle = "Total Population in Poverty by County",
     x = "Length of Flood in Days",
     y = "Population living in Poverty (10000s)"
@@ -612,7 +556,7 @@ ggplot(data = storm_20_21,
   geom_bar(stat = "identity", position = "dodge") +
   facet_wrap(~ihProgramDeclared, nrow = 1) +
   labs(
-    title = "Figure 6. Individual and Household Assistance Program Declaration",
+    title = "Figure 6. Individual and Household Assistance Program",
     subtitle = "Total Population in Poverty Under the Age of 5 by County",
     x = "Length of Flood in Days",
     y = "Population Under 5 Years in Poverty (10000s)"
@@ -631,7 +575,7 @@ ggplot(data = storm_20_21,
   geom_bar(stat = "identity", position = "dodge") +
   facet_wrap(~ihProgramDeclared, nrow = 1) +
   labs(
-    title = "Figure 7. Individual and Household Assistance Program Declaration",
+    title = "Figure 7. Individual and Household Assistance Program",
     subtitle = "Total Population in Poverty from 5-to-17 Years of Age by County",
     x = "Length in Days",
     y = "Population 5-to-17 Years in Poverty (10000s)"
@@ -655,7 +599,7 @@ ggplot(data = storm_20_21,
   geom_bar(stat = "identity", position = "dodge") +
   facet_wrap(~paProgramDeclared, nrow = 1) +
   labs(
-    title = "Figure 8. Public Assistance Program Declaration",
+    title = "Figure 8. Public Assistance Program",
     subtitle = "Total Population in Poverty by County",
     x = "Length of Flood in Days",
     y = "Population living in Poverty (10000s)"
@@ -674,7 +618,7 @@ ggplot(data = storm_20_21,
   geom_bar(stat = "identity", position = "dodge") +
   facet_wrap(~paProgramDeclared, nrow = 1) +
   labs(
-    title = "Figure 9. Public Assistance Program Declaration",
+    title = "Figure 9. Public Assistance Program",
     subtitle = "Total Population in Poverty Under the Age of 5 by County",
     x = "Length of Flood in Days",
     y = "Population Under 5 Years in Poverty (10000s)"
@@ -693,7 +637,7 @@ ggplot(data = storm_20_21,
   geom_bar(stat = "identity", position = "dodge") +
   facet_wrap(~paProgramDeclared, nrow = 1) +
   labs(
-    title = "Figure 10. Public Assistance Program Declaration",
+    title = "Figure 10. Public Assistance Program",
     subtitle = "Total Population in Poverty from 5-to-17 Years of Age by County",
     x = "Length in Days",
     y = "Population 5-to-17 Years in Poverty (10000s)"
@@ -716,7 +660,7 @@ ggplot(data = storm_20_21,
   geom_bar(stat = "identity", position = "dodge") +
   facet_wrap(~hmProgramDeclared, nrow = 1) +
   labs(
-    title = "Figure 11. Hazard Mitigation Program Declaration",
+    title = "Figure 11. Hazard Mitigation Program",
     subtitle = "Total Population in Poverty by County",
     x = "Length of Flood in Days",
     y = "Population living in Poverty (10000s)"
