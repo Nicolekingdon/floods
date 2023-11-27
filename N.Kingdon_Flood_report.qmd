@@ -31,7 +31,7 @@ Low-income children and adolescents directly and indirectly experience several m
 
 Figure 1 shows the Family Stress Model Framework ([@masarik2017]), which conceptualizes how risks, like floods, can impact low-income children. The economic hardship, like floods, is placed upon the household, which increases economic pressure. This increases parental/caregiver psychological distress, which is likely to impact relationships and parenting. Ultimately, the child may be impacted by experiencing adjustment problems across their development.
 
-![Family Stress Model Framework. (Masarik & Conger, 2017)](1-s2.0-S2352250X16300549-gr1.jpg){fig-align="center" width="290"}
+![Family Stress Model Framework. (Masarik & Conger, 2017)](images/1-s2.0-S2352250X16300549-gr1.jpg){fig-align="center"}
 
 ## Protective Factors
 
